@@ -77,7 +77,7 @@ const Card = props => {
           {
             comments.map((comment, idx) => (
               <div className="flex mb-5" key={idx}>
-                <div><img className="w-8 h-8" src={comment.avatar} /></div>
+                <div><img className="w-8 h-8" src={comment.avatar} alt="logo" /></div>
                 <div className="flex flex-col px-1">
                   <div className="text-white pt-1 font-heading">{comment.name}</div>
                   <div className="text-white opacity-80">{comment.value}</div>
