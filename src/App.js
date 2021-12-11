@@ -1,23 +1,57 @@
 import logo from './logo.svg';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './App.css';
+
+const data = {
+  title: "Need Chakra dev for 3 week project",
+  desc: "This is an open source project which can be downloaded for free from github (requires developer experience to set up and configure). This website provides extra functionality over the free script for companies to manage their own users accounts and allow users to easily register and manage their own data sets. It helps fund the open source project, so thanks for signing up!",
+  comments: [
+    {
+      value: 'Can you explain this request in detail?',
+      avatar: logo,
+      name: 'Eleanor Pena',
+      reply: []
+    }
+  ],
+  label: "Funding",
+  postedBy: "Ralph Lauren",
+  createdAt: "3h ago.." // replaced with timestamp
+}
 
 function App() {
   return (
     <div className="p-6">
-      <Card />
+      <Card data={data} />
     </div>
   );
 }
 
-const Card = () => {
+const Card = props => {
 
+  const data = props.data
   const [expandSubheading, setExpandSubheading] = useState(false)
+  const [comments, setComments] = useState(data.comments)
+  const commentRef = useRef()
 
   const toggleExpandSubheading = () => {
     setExpandSubheading(prev => {
       return !prev
     })
+  }
+
+  const handleInput = e => {
+    if (e.key === 'Enter') {
+      const commentObj = {
+        value: commentRef.current.value,
+        avatar: logo,
+        name: 'Eleanor Pena',
+        reply: []
+      }
+      setComments(comments => {
+        return [...comments, commentObj]
+      })
+      commentRef.current.value = ''
+    }
   }
 
   let expandSubHeadingStyle = ''
@@ -26,15 +60,12 @@ const Card = () => {
   }
 
   return (
-    <div className="bg-primary p-6 mx-auto rounded-lg font-medium w-card">
-      <div className="font-heading text-white pb-3 text-lg font-bold">Need Chakra dev for 3 week project</div>
-      <div>
+    <div className="bg-primary mx-auto rounded-lg font-medium w-card pt-6">
+      <div className="font-heading px-6 text-white pb-3 text-lg font-bold">{data.title}</div>
+
+      <div className="px-6">
         <p className={`text-white opacity-70 ${expandSubHeadingStyle}`}>
-          Subheading - sfgsdfg sfglkndslfg  dlfsk gl dsfg ldk sfglk dsfg  dsfglknfdslkgd gldf gkldsflkngld
-          sfgsdfg sfglkndslfg  dlfsk gl dsfg ldk sfglk dsfg  dsfglknfdslkgd gldf gkldsflkngld
-          sfgsdfg sfglkndslfg  dlfsk gl dsfg ldk sfglk dsfg  dsfglknfdslkgd gldf gkldsflkngld
-          sfgsdfg sfglkndslfg  dlfsk gl dsfg ldk sfglk dsfg  dsfglknfdslkgd gldf gkldsflkngld
-          sfgsdfg sfglkndslfg  dlfsk gl dsfg ldk sfglk dsfg  dsfglknfdslkgd gldf gkldsflkngld
+          {data.desc}
         </p>
         <p
           onClick={toggleExpandSubheading}
@@ -42,26 +73,58 @@ const Card = () => {
           {expandSubheading ? "see less..." : "see more..."}
         </p>
       </div>
-      <div className="font-heading my-8 flex">
+
+      <div className="font-heading my-6 px-6 flex">
         <span
           className="bg-label text-white px-3 py-1/2 rounded-3xl text-xxs my-1">
-          Funding
+          {data.label}
         </span>
         <span className="bg-divider w-line h-4 my-auto ml-3 mx-1"></span>
         <span className="flex">
           <span className="mx-1"><img className="w-8 h-8" src={logo} alt="logo" /></span>
-          <span className="text-normal leading-8 text-white">Ralph Edwards</span>
+          <span className="text-normal leading-8 text-white">{data.postedBy}</span>
         </span>
         <span className="bg-divider w-line h-4 my-auto mx-3"></span>
         <span className="font-heading text-normal leading-8 text-white opacity-50">3h ago</span>
       </div>
-      <div className="h-line bg-divider w-full"></div>
-      <div className="mt-5 text-white">
-        <input
-          className="bg-inputBox bg-opacity-20 placeholder-white placeholder-opacity-50
-           py-3.5 rounded-full px-5 w-full"
-          type="text"
-          placeholder="How can you help with this Request?" />
+
+      <div className="bg-inputBox bg-opacity-10 px-6 py-6">
+        {comments.length > 0 &&
+          <div className="flex mb-6">
+            <span
+              className="font-heading bg-inputBox bg-opacity-20
+             text-white pl-5 pr-4 py-3 rounded-full text-xs cursor-pointer">
+              Most Recent <svg xmlns="http://www.w3.org/2000/svg" className="inline h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </span>
+          </div>
+        }
+        {
+          comments.map((comment, idx) => (
+            <div className="flex mb-5" key={idx}>
+              <div><img className="w-8 h-8" src={comment.avatar} /></div>
+              <div className="flex flex-col px-1">
+                <div className="text-white pt-1 font-heading">{comment.name}</div>
+                <div className="text-white opacity-80">{comment.value}</div>
+              </div>
+            </div>
+          ))
+        }
+
+
+        <div className="h-line bg-divider w-full"></div>
+
+        <div className="mt-5 text-white">
+          <input
+            className="bg-inputBox bg-opacity-20 placeholder-white placeholder-opacity-50
+                       py-3.5 rounded-full px-5 w-full"
+            ref={commentRef}
+            onKeyDown={handleInput}
+            type="text"
+            placeholder="How can you help with this Request?" />
+        </div>
+
       </div>
     </div>
   )
